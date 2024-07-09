@@ -154,3 +154,4 @@ echo $MAJOR
 declare -p IFS
 ./insert_data.sh
 ./insert_data.sh
+PSQL="psql -X --username=freecodecamp --dbname=students --no-align --tuples-only -c"
