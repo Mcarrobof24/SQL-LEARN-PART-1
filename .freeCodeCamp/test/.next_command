@@ -160,3 +160,4 @@ PSQL="psql -X --username=freecodecamp --dbname=students --no-align --tuples-only
 __vsc_prompt_cmd_original
 cp courses.csv courses_test.csv
 ./insert_data.sh
+./insert_data.sh
