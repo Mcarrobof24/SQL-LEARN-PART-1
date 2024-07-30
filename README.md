@@ -81,6 +81,7 @@ Se utiliza el comando abreviado de visualización para ver sus tablas
 students=> \d
 ```
 Muestra la lista de tablas que hemos creado
+
 ![Imagen2](https://github.com/user-attachments/assets/a7813b51-04d3-4a68-a80a-3aef4c815c54)
 
 ### Paso 9: Crear columnas en la tabla students
