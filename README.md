@@ -149,21 +149,66 @@ Para verificar que la llave foránea se ha establecido en la **_tabla students_*
 
 ![Imagen4](https://github.com/user-attachments/assets/30207928-bec8-4c61-9894-c9cb03cd9757)
 
-### Paso 15: 
+### Paso 15: Crear columnas en la tabla courses
+En la **_tabla courses_** se crean las siguientes columnas:
 
+1. **Columna course_id:** Se crea una columna llamada **_course_id_** de tipo **_SERIAL_** y que sea la **_PRIMARY KEY_**.
+  ```md
+  students=> ALTER TABLE courses ADD COLUMN course_id SERIAL PRIMARY KEY;
+  ```
+2. **Columna course:** Crea una columna **course** que es de tipo **_VARCHAR(100)_** y con la restricción **_NOT NULL_**.
+  ```md
+  students=> ALTER TABLE courses ADD COLUMN course VARCHAR(100) NOT NULL;
+  ```
+### Paso 16: Ver detalles de la tabla courses
+Se utiliza el comando de acceso directo para mostrar los detalles de la tabla de **_courses_**.
+ ```md
+  students=> \d courses
+  ```
+![Imagen5](https://github.com/user-attachments/assets/abac54b5-14f7-40e5-9b8a-33f4a601ea42)
 
+### Paso 17: Crear columnas en la tabla majors_courses
+La **_tabla de unión majors_courses_** tiene dos columnas, cada una hace referencia a la clave primaria de dos tablas relacionadas.
 
+1. **Columna major_id:** Se crea una columna llamada **_major_id_** de tipo **_INT_**.
+  ```md
+  students=> ALTER TABLE majors_courses ADD COLUMN major_id INT;
+  ```
+2. **Columna course_id:** Crea una columna **course_id** que es de tipo **_INT_**.
+  ```md
+  students=> ALTER TABLE majors_courses ADD COLUMN course_id INT;
+  ```
 
+### Paso 18: Establecer llaves foráneas en la tabla majors_courses
 
+1. Se establece la **_columna major_id_** de la **_tabla majors_courses_** como una **_llave foránea_** que hace referencia a la **_columna major_id_** de la **_tabla majors_**.
+  ```md
+  students=> ALTER TABLE majors_courses ADD FOREIGN KEY(major_id) REFERENCES majors(major_id);
+  ```
+2. Se establece la **_columna course_id_** como una **_llave foránea_**  que haga referencia a la otra **_columna course_id_** de la **_tabla courses_**.
+  ```md
+  students=> ALTER TABLE majors_courses ADD FOREIGN KEY(course_id) REFERENCES courses(course_id);
+  ```
 
+### Paso 19: Ver detalles de la tabla majors_courses
+Se utiliza el comando de acceso directo para mostrar los detalles de la tabla de **_majors_courses_**. Y se verificar que la llaves foránea se establecieron de forma correcta.
+ ```md
+  students=> \d majors_courses
+  ```
+![Imagen6](https://github.com/user-attachments/assets/31c323d3-e48b-420e-9013-9a5a97eab128)
 
+### Paso 20: Crear llave primaria compuesta en majors_courses
+Se crea una **_llave primaria compuesta_**  que utilice más de una columna como par único de la siguiente manera: `ALTER TABLE <nombre_tabla> ADD PRIMARY KEY(<nombre_columna>, <nombre_columna>);` 
+ ```md
+  students=> ALTER TABLE majors_courses ADD PRIMARY KEY(major_id, course_id);
+  ```
+Con el uso comando de acceso directo para mostrar los detalles de la tabla de **_majors_courses_**, se verificar que la **_llave primaria compuesta_** se estableció de forma correcta.
+ ```md
+  students=> \d majors_courses
+  ```
+![Imagen7](https://github.com/user-attachments/assets/8f2bb60b-1f45-449d-8752-af0b9869b610)
 
-
-
-
-
-
-
+### Paso 21: Insertar datos en la tabla majors
 
 
 
