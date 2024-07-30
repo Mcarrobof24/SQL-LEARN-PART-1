@@ -208,7 +208,53 @@ Con el uso comando de acceso directo para mostrar los detalles de la tabla de **
   ```
 ![Imagen7](https://github.com/user-attachments/assets/8f2bb60b-1f45-449d-8752-af0b9869b610)
 
-### Paso 21: Insertar datos en la tabla majors
+### Paso 21: Insertar datos en la tablas
+Para insertar datos en nuestras tablas se utiliza la siguiente sintáxis `INSERT INTO <nombre_tabla>(<nombre_columna>) VALUES(<valor>);`
+1. **INSERT INTO en la tabla students**
+ ```md
+  students=> INSERT INTO students(first_name, last_name, major_id, gpa) VALUES('Rhea', 'Kellems', 1, 2.5);
+  ```
+2. **INSERT INTO en la tabla majors**
+ ```md
+  students=> INSERT INTO majors(major) VALUES('Database Administration');
+  ```
+3.  **INSERT INTO en la tabla courses**
+ ```md
+  students=> INSERT INTO courses(course) VALUES('Data Structures and Algorithms');
+  ```
+4.  **INSERT INTO en la tabla majors_courses**
+ ```md
+  students=> INSERT INTO majors_courses(major_id, course_id) VALUES(1, 1);
+  ```
+
+### Paso 22: Usar SELECT para mostrar detalles de las tablas
+Utilice **_SELECT_** para ver todos los datos de las tablas.
+ ```md
+  students=> SELECT * FROM students;
+  students=> SELECT * FROM majors;
+  students=> SELECT * FROM courses;
+  students=> SELECT * FROM majors_courses;
+  ```
+### Paso 23: Añadir datos a las tablas mediante script
+1. Se utiliza el **_comando touch_** en la terminal de bash para crear un archivo llamado **_insert_data.sh_** en la carpeta de tu proyecto.
+ ```sh
+  camper: /project$ touch insert_data.sh
+  ```
+2. Se utiliza el **_comando chmod +x_** para darle nuevos permisos ejecutables de script.
+ ```sh
+  camper: /project$ chmod +x insert_data.sh
+  ```
+3. En el archivo **_insert_data.sh_** inserta la siguiente lo siguiente **_`#!/bin/bash`_**
+
+4. 
+
+
+
+
+
+
+
+
 
 
 
