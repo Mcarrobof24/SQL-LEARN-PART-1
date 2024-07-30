@@ -36,6 +36,7 @@ En el terminal de PostgresSQL se escribe el siguiente comando abreviado:
 postgres=> \l
 ```
 Este comando muestra una lista de las bases de datos existentes.
+
 ![Imagen1](https://github.com/user-attachments/assets/7e4392b7-cf52-4f14-81c5-2bd664d5a752)
 
 ### Paso 4: Crear una base de datos
@@ -50,6 +51,7 @@ En el listado de base de datos comprobamos que se encuentre la **_base de datos 
 ```md
 postgres=> \l
 ```
+
 ![Sin título](https://github.com/user-attachments/assets/0463ec5f-eb2d-4b05-b57f-be00f8f9656f)
 
 ### Paso 6: Conectar a la base de datos students
@@ -85,12 +87,79 @@ Muestra la lista de tablas que hemos creado
 ![Imagen2](https://github.com/user-attachments/assets/a7813b51-04d3-4a68-a80a-3aef4c815c54)
 
 ### Paso 9: Crear columnas en la tabla students
-El **_archivo Students.csv_** 
+En la **_tabla students_** se crean las siguientes columnas:
+
+1. **Columna student_id:** Se crea una columna llamada **_student_id_** de tipo **_SERIAL_** para que se incremente automáticamente y que sea **_PRIMARY KEY_**.
+  ```md
+  students=> ALTER TABLE students ADD COLUMN student_id SERIAL PRIMARY KEY;
+  ```
+2. **Columna first_name:** Crea una columna **_first_name_** en la tabla **_students_** que es de tipo **_VARCHAR(50)_** y con la restricción **_NOT NULL_**.
+  ```md
+  students=> ALTER TABLE students ADD COLUMN first_name VARCHAR(50) NOT NULL;
+  ```
+3. **Columna last_name:** Posee el mismo tipo de datos y longitud máxima que **_first_name_** y con la restricción **_NOT NULL_**.
+ ```md
+  students=> ALTER TABLE students ADD COLUMN last_name VARCHAR(50) NOT NULL;
+  ```
+4. **Columna major_id:** Esta columna es de tipo de dato **_INT_**.
+ ```md
+  students=> ALTER TABLE students ADD COLUMN major_id INT;
+  ```
+5. **Columna gpa:** La última columna **_gpa_** en la tabla **_students_** es de tipo **_NUMERIC(2,1)._**
+ ```md
+  students=> ALTER TABLE students ADD COLUMN gpa NUMERIC(2,1);
+  ```
+
+### Paso 10: Ver detalles de la tabla students
+Se utiliza el comando de acceso directo para mostrar los detalles de la tabla de **_students_**.
+ ```md
+  students=> \d students
+  ```
+
+![Imagen1](https://github.com/user-attachments/assets/3e6e6d73-6097-436d-9376-6ba83b80ea10)
+
+### Paso 11: Crear columnas en la tabla majors
+En la **_tabla majors_** se crean las siguientes columnas:
+
+1. **Columna major_id:** Se crea una columna llamada **_major_id_** de tipo **_SERIAL_** y que sea **_PRIMARY KEY_** de la **_tabla majors_**  .
+  ```md
+  students=> ALTER TABLE majors ADD COLUMN major_id SERIAL PRIMARY KEY;
+  ```
+2. **Columna major:** Crea una columna **major** que es de tipo **_VARCHAR(50)_** y con la restricción **_NOT NULL_**.
+  ```md
+  students=> ALTER TABLE majors ADD COLUMN major VARCHAR(50) NOT NULL;
+  ```
+
+### Paso 12: Ver detalles de la tabla majors
+Se utiliza el comando de acceso directo para mostrar los detalles de la tabla de **_majors_**.
+ ```md
+  students=> \d majors
+  ```
+![Imagen3](https://github.com/user-attachments/assets/1f110bed-bba9-40f4-8f27-acdf1be0fcb4)
+
+### Paso 13: Establecer la llave foránea (foreign key) en la tabla de students
+Se establezce la **_columna major_id_** de la tabla students como una **_clave foránea_** que hace referencia a la **_columna major_id_** de la tabla **_majors_**. 
+`ALTER TABLE <nombre_tabla> ADD FOREIGN KEY(<nombre_columna>) REFERENCES <nombre_tabla_referenciada>(<nombre_columna_referenciada>);`
+ ```md
+  students=> ALTER TABLE students ADD FOREIGN KEY(major_id) REFERENCES majors(major_id);
+ ```
+
+### Paso 14: Verificar que la llave foránea se ha establecido en la tabla de students
+Para verificar que la llave foránea se ha establecido en la **_tabla students_** se utiliza el comando abreviado de visualización para ver los detalles tablas.
+
+![Imagen4](https://github.com/user-attachments/assets/30207928-bec8-4c61-9894-c9cb03cd9757)
+
+### Paso 15: 
 
 
-esto todavia falta
-Sobre las columnas. El archivo Students.csv tiene cuatro campos; creará una columna para cada uno de ellos, así como una columna de ID. 
-Agregue una columna a la tabla de estudiantes llamada Student_id. Dale un tipo de SERIAL para que incremente automáticamente y conviértelo en CLAVE PRIMARIA.
+
+
+
+
+
+
+
+
 
 
 
