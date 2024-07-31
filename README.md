@@ -244,19 +244,340 @@ Utilice **_SELECT_** para ver todos los datos de las tablas.
  ```sh
   camper: /project$ chmod +x insert_data.sh
   ```
-3. En el archivo **_insert_data.sh_** inserta la siguiente lo siguiente **_`#!/bin/bash`_**
+3. En el archivo **_insert_data.sh_** inserta la primera línea lo siguiente: **_`#!/bin/bash`_**
+   
+4. Se añade el comentario: **_`#Script to insert data from courses.csv and students.csv into students database.`_** en el archivo **_insert_data.sh_**
+   
+5. El comando de terminal **_`cat <filename>`_** imprime el contenido de un archivo. Se escribe **_`cat courses.csv`_** debajo del comentario anterior para mostrar los datos del **_archivos courses.csv_**.
 
-4. 
+6. Se ejecuta el script para ver si se imprime el contenido del archivo.
+ ```sh
+  camper: /project$ ./insert_data.sh
+  ```
+![Imagen7](https://github.com/user-attachments/assets/62bdf279-6dd3-4bdc-bbbe-ba9bc5495f39)
 
+### Paso 24: Utilizar el bucle WHILE 
+Para canalizar la salida se utiliza el bucle WHILE para recorrer las filas una a la vez. Cada nueva línea se leerá en las variables `MAJOR` y `COURSE`, use `echo` para imprimir la variable `MAJOR`.
+ ```sh
+  cat courses.csv | while read MAJOR COURSE
+  do
+    echo $MAJOR
+  done
+ ```
 
+### Paso 25: Declarar y establecer IFS(Internal Field Separator o Separador de campo interno)
+1. Se utiliza IFS para determinar los límites de las palabras y se declara la IFS en la terminal:
+ ```sh
+  camper: /project$ declare -p IFS
+  ```
+2. Se establece IFS entre los `comandos while y read` de la siguiente manera:
+ ```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    echo $MAJOR
+  done
+ ```
 
+### Paso 26: Agregar comentarios
+Se agrega comentarios de una línea en el bucle `WHILE` en el siguiente orden:
+ ```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    # get major_id
 
+    # if not found
 
+    # insert major
 
+    # get new major_id
 
+    # get course_id
 
+    # if not found
 
+    # insert course
 
+    # get new course_id
 
+    # insert into majors_courses
+
+  done
+ ```
+
+### Paso 27: Agregar el comando PSQL
+Se agrega el siguiente **_`comando PSQL`_** que permite consultar la base de datos desde el script.
+
+ ```sh
+  PSQL="psql -X --username=freecodecamp --dbname=students --no-align --tuples-only -c"
+ ```
+Las partes importantes son el `username`, el nombre de la base de datos `dbname` y el indicador -c que sirve para ejecutar un solo comando y salir. 
+
+### Paso 28: Crear la variable MAJOR_ID
+Se puede consultar la base de datos usando la variable PSQL de esta manera: **_`$($PSQL "<query_here>")`_**
+
+Este código se ejecuta en un subshell, que es un proceso bash independiente. Debajo del comentario **_`# get major_id`_** se crea una variable **_`MAJOR_ID`_**. Se establece una consulta que obtiene el **_`major_id`_**  del **_`MAJOR`_** actual en el bucle.
+```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    # get major_id
+
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+
+  done
+ ```
+
+### Paso 29: Imprimir la variable MAJOR_ID utilizando echo
+Se usa echo para imprimir la variable **_`MAJOR_ID`_** y poder ver su valor cuando ejecute el script.
+```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    # get major_id
+
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    echo $MAJOR_ID
+
+  done
+ ```
+### Paso 30: Utilizar IF para comprobar si una variable está vacía.
+Se agrega una condición if para verificar si la variable **_`MAJOR_ID`_** está vacía. Se puede hacerlo con esta prueba: **_`[[ -z $MAJOR_ID ]]`_**.
+```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    # get major_id
+
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    echo $MAJOR_ID
+
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+  done
+ ```
+### Paso 31: Crear la variable INSERT_MAJOR_RESULT
+Se crea una variable INSERT_MAJOR_RESULT, se establece su valor en una consulta que inserte la major (especialización) actual en la base de datos. Y se agrega el `echo` a la variable para imprimirla.
+```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  do
+    # get major_id
+
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    echo $MAJOR_ID
+
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+    # insert major
+    INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+    echo $INSERT_MAJOR_RESULT 
+  done
+ ```
+### Paso 32: Copiar el archivo courses.csv
+Se usa el **_`comando copiar (cp)`_** para copiar el archivo **_courses.csv_** en un nuevo archivo llamado **_courses_test.csv_**.
+```sh
+  camper: /project$ cp courses.csv courses_test.csv
+ ```
+En el archivo **_courses_test.csv_** se elimina todas las líneas excepto las cinco primeras. El archivo debería verse así:
+```sh
+  major,course
+  Database Administration,Data Structures and Algorithms
+  Web Development,Web Programming
+  Database Administration,Database Systems
+  Data Science,Data Structures and Algorithms
+ ```
+
+### Paso 33: Cambiar el script a analizar
+En el archivo **_`insert_data.sh`_** se cambia el **_`comando cat`_** para recorrer el archivo de prueba **_`courses_test.csv`_** en lugar del completo.
+```sh
+  cat courses_test.csv | while IFS="," read MAJOR COURSE
+ ```
+Al ejecutar el script se revisará los datos de prueba e insertará un major (especialidad) en la base de datos cada vez que no encuentre ninguna allí e imprimirá las variables **_`MAJOR_ID`_** e **_`INSERT_MAJOR_RESULT`_**.
+
+Ya no es necesario imprimir el ID, así que se elimina la línea echo **_`$MAJOR_ID`_**.
+
+### Paso 34: Eliminar tablas con TRUNCATE
+Se utiliza **_`TRUNCATE`_** para eliminar todos los datos de una tabla. Se elimina todos los datos de todas las **_`tablas`_** ingresando **_`TRUNCATE <table1>, <table2>, <table3>;`_**
+```sh
+  students=> TRUNCATE majors, students, courses, majors_courses;
+ ```
+### Paso 35: Agregar IF major
+Se agrega una condición if en la parte superior de su bucle que verifique si **_`$MAJOR != major`_**.
+```sh
+  do
+  if [[ $MAJOR != major ]]
+  then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+      # insert major
+      INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+      echo $INSERT_MAJOR_RESULT
+      # get new major_id
+    fi
+    # get course_id
+    # if not found
+    # insert course
+    # get new course_id
+    # insert into majors_courses
+  fi
+done
+ ```
+
+### Paso 36: Eliminar INSERT_MAJOR_RESULT
+Se borra la línea echo **_`$INSERT_MAJOR_RESULT`_**
+```sh
+  do
+  if [[ $MAJOR != major ]]
+  then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+      # insert major
+      INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+      # get new major_id
+    fi
+    # get course_id
+    # if not found
+    # insert course
+    # get new course_id
+    # insert into majors_courses
+  fi
+done
+ ```
+### Paso 37: Añadir IF en INSERT_MAJOR_RESULT
+Se agregue una declaración **_`if`_** que verifique si la variable es igual a INSERT 0 1, se utiliza **_`echo`_** para imprimir el mensaje **_`Inserted into majors, $MAJOR"`_**.
+```sh
+  do
+  if [[ $MAJOR != major ]]
+  then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+      # insert major
+      INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+      if [[ $INSERT_MAJOR_RESULT == "INSERT 0 1" ]]
+      then
+        echo "Inserted into majors, $MAJOR"
+      fi
+      # get new major_id
+    fi
+    # get course_id
+    # if not found
+    # insert course
+    # get new course_id
+    # insert into majors_courses
+  fi
+done
+ ```
+
+### Paso 38: Añadir MAJOR_ID, COURSE_ID, INSERT_COURSE_RESULT 
+1. Se establece la variable **_`MAJOR_ID`_** en una consulta que obtenga el nuevo **_`major_id`_** de la base de datos.
+2. Se agrega una variable **_`COURSE_ID`_** que obtenga el **_`courses_id`_** de la base de datos.
+3. Se escribe una declaración **_`if`_** que verifique si la consulta estaba vacía para que pueda insertar el curso si es necesario.
+4. Debajo del comentario de # insert course, se crea una variable **_`INSERT_COURSE_RESULT`_** que inserte el curso en la base de datos.
+5. Debajo de la variable **_`INSERT_COURSE_RESULT`_**, se agrega una condición **_`if`_** que verifique si lo es e imprima le mensaje **_`"Inserted into majors,  $COURSE" usando echo`_**.
+```sh
+  do
+  if [[ $MAJOR != major ]]
+  then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+      # insert major
+      INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+      if [[ $INSERT_MAJOR_RESULT == "INSERT 0 1" ]]
+      then
+        echo "Inserted into majors, $MAJOR"
+      fi
+      # get new major_id
+      MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    fi
+    # get course_id
+    COURSE_ID=$($PSQL "SELECT course_id FROM courses WHERE course='$COURSE'")
+
+    # if not found
+    if [[ -z $COURSE_ID ]]
+    then
+    # insert course
+    INSERT_COURSE_RESULT=$($PSQL "INSERT INTO courses(course) VALUES('$COURSE')")
+    if [[ $INSERT_COURSE_RESULT == "INSERT 0 1" ]]
+    then
+    echo "Inserted into courses, $COURSE"
+    # get new course_id
+    fi
+    # insert into majors_courses
+  fi
+done
+ ```
+
+### Paso 39: Eliminar los datos en la tablas de forma automática
+En la parte superior del archivo debajo de su variable PSQL, use **_`echo`_** para consultar la base de datos. En la consulta, trunque sus cuatro tablas en este orden: **_`students, majors, courses, majors_courses`_**.
+```sh
+  echo $($PSQL "TRUNCATE students, majors, courses, majors_courses")
+ ```
+
+### Paso 40: Añadir COURSE_ID, INSERT_MAJORS_COURSES_RESULT
+1. Debajo de su comentario **_`# get new course_id`_**, establezca **_`COURSE_ID `_** en el **_`id_courses`_** recién insertado.
+2.  Se crea una variable **_`INSERT_MAJORS_COURSES_RESULT`_** que se utiliza con las variables **_`MAJOR_ID y COURSE_ID`_**.
+3. Se añade una condición **_`if`_** que compruebe si es igual a INSERT 0 1.
+```sh
+  do
+  if [[ $MAJOR != major ]]
+  then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    # if not found
+    if [[ -z $MAJOR_ID ]]
+    then
+      # insert major
+      INSERT_MAJOR_RESULT=$($PSQL "INSERT INTO majors(major) VALUES('$MAJOR')")
+      if [[ $INSERT_MAJOR_RESULT == "INSERT 0 1" ]]
+      then
+        echo "Inserted into majors, $MAJOR"
+      fi
+      # get new major_id
+      MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    fi
+    # get course_id
+    COURSE_ID=$($PSQL "SELECT course_id FROM courses WHERE course='$COURSE'")
+
+    # if not found
+    if [[ -z $COURSE_ID ]]
+    then
+    # insert course
+    INSERT_COURSE_RESULT=$($PSQL "INSERT INTO courses(course) VALUES('$COURSE')")
+    if [[ $INSERT_COURSE_RESULT == "INSERT 0 1" ]]
+    then
+    echo "Inserted into courses, $COURSE"
+
+    # get new course_id
+    COURSE_ID=$($PSQL "SELECT course_id FROM courses WHERE course='$COURSE'")
+    fi
+
+    # insert into majors_courses
+    INSERT_MAJORS_COURSES_RESULT=$($PSQL "INSERT INTO majors_courses(major_id, course_id) VALUES($MAJOR_ID, $COURSE_ID)")
+     if [[ $INSERT_MAJORS_COURSES_RESULT == "INSERT 0 1" ]]
+    then
+      echo "Inserted into majors_courses, $MAJOR : $COURSE"
+    fi
+  fi
+done
+ ```
+Cuando se ejecuta el script, las tablas se truncan y luego pasar por el bucle y se agregan todos los datos de **_`cursos_test.csv`_** a las tres tablas de la base de datos.
+
+### Paso 41: Agregar el contenido del archivo students.csv
+Se debe agregar todo el contenido del archivo **_`students.csv`_**. En la terminal, se usa el **_`comando cp`_** para copiar el archivo **_`students.csv`_** en un archivo llamado **_`students_test.csv`_**.
+```sh
+camper: /project$ cp students.csv students_test.csv
+```
+
+### Paso 42: 
 
 
