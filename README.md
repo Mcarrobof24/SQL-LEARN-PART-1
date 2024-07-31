@@ -572,12 +572,117 @@ done
  ```
 Cuando se ejecuta el script, las tablas se truncan y luego pasar por el bucle y se agregan todos los datos de **_`cursos_test.csv`_** a las tres tablas de la base de datos.
 
-### Paso 41: Agregar el contenido del archivo students.csv
+### Paso 41: Copiar el archivo students.csv
 Se debe agregar todo el contenido del archivo **_`students.csv`_**. En la terminal, se usa el **_`comando cp`_** para copiar el archivo **_`students.csv`_** en un archivo llamado **_`students_test.csv`_**.
 ```sh
 camper: /project$ cp students.csv students_test.csv
 ```
+En el archivo **_`students_test.csv`_**, se elimina todo menos las primeras cinco líneas.
 
-### Paso 42: 
+### Paso 42: Imprimir el contenido del archivo de prueba `students_test.csv`
+Se usa el **_`comando cat`_** para imprimir el nuevo archivo de prueba. Se canalice los resultados en un bucle **_`while`_**, se establece **_`IFS`_** en una coma nuevamente y se usa **_`read`_** para crear las variables **_`FIRST, LAST, MAJOR y GPA`_** a partir de los datos. En el bucle, se usa **_`echo`_** para imprimir la variable **_`FIRST`_**.
+
+```sh
+  cat students_test.csv | while IFS="," read FIRST LAST MAJOR GPA
+  do
+    echo $FIRST
+  done
+ ```
+
+### Paso 43: Agregar IF y comentarios
+1. Se agrega una condición if al bucle que verifica si la variable **_`FIRST`_** no es igual a **_`first_name`_**.
+2. Se agrega cuatro comentarios de una sola línea en su bucle: **_`get major_id, if not found, set to null and insert student`_**
+```sh
+  cat students_test.csv | while IFS="," read FIRST LAST MAJOR GPA
+  do
+    if [[ $FIRST != "first_name" ]]
+    then
+    # get major_id
+   
+    # if not found
+   
+    # set to null
+   
+    # insert student
+  
+  fi
+  done
+ ```
+
+### Paso 44: Agregar MAJOR_ID, INSERT_STUDENT_RESULT, IF para comprobar si la variable está vacía
+1. Se establece la variable **_`MAJOR_ID`_** en una consulta que obtenga el **_`major_id`_** para la major (especialidad) actual de los estudiantes. Y se usa **_`echo`_** para imprimir la variable para que pueda ver si está funcionando.
+2. Se agrega un **_`if`_** que verifique si la variable está vacía.
+3. Se establece la variable **_`MAJOR_ID`_** en nulo para poder usarla para insertar los datos.
+4. Se crea una variable **_`INSERT_STUDENT_RESULT`_** que agrega al estudiante a la base de datos. Se agrega las columnas en el orden en que aparecen en los datos y asegúrese de poner solo las dos columnas VARCHAR entre comillas simples.
+5. Debajo de la variable **_`INSERT_STUDENT_RESULT`_**, agrega una declaración **_`if`_** que verifique si es igual a **_`INSERT 0 1`_**.
+6. 
+```sh
+  cat students_test.csv | while IFS="," read FIRST LAST MAJOR GPA
+  do
+    if [[ $FIRST != "first_name" ]]
+    then
+    # get major_id
+    MAJOR_ID=$($PSQL "SELECT major_id FROM majors WHERE major='$MAJOR'")
+    echo $MAJOR_ID
+   
+    # if not found
+     if [[ -z $MAJOR_ID ]]
+    then
+      # set to null
+      MAJOR_ID=null
+    fi
+   
+    # insert student
+    INSERT_STUDENT_RESULT=$($PSQL "INSERT INTO students(first_name, last_name, major_id, gpa) VALUES('$FIRST', '$LAST', $MAJOR_ID, $GPA)")
+    if [[ $INSERT_STUDENT_RESULT == "INSERT 0 1" ]]
+    then
+      echo "Inserted into students, $FIRST $LAST"
+    fi
+  fi
+  done
+ ```
+
+### Paso 45: Cambiar el script a los archivos originales
+1. Se cambia la línea **_`cat cursos_test.csv`_** para usar el archivo original nuevamente.
+ ```sh
+  cat courses.csv | while IFS="," read MAJOR COURSE
+  ```
+2. Se cambia la línea **_`students_test.csv `_** para usar el archivo original.
+ ```sh
+  cat students.csv | while IFS="," read FIRST LAST MAJOR GPA
+  ```
+
+### Paso 46: Ejecutar el script
+En la terminal bash se ejecuta **_`./insert_data.sh`_**  
+ ```sh
+  camper: /project$ ./insert_data.sh
+  ```
+Mediante la consulta SELECT se visualiza los datos de cada una de nuestras tablas
+1. Tabla **_`students`_** tiene 31 filas.
+ ```sh
+  SELECT * FROM students;
+  ```
+![Imagen8](https://github.com/user-attachments/assets/5cb059bf-5f51-4c85-9a21-7a8d59ba713f)
+
+2. Tabla **_`majors`_** tiene 7 filas.
+ ```sh
+  SELECT * FROM majors;
+  ```
+![Imagen9](https://github.com/user-attachments/assets/12e3c65a-1611-4e33-a9c8-2765ba597066)
+
+3. Tabla **_`courses`_** tiene 17 filas.
+ ```sh
+  SELECT * FROM courses;
+  ```
+![Imagen10](https://github.com/user-attachments/assets/7ececd3a-b069-43fd-a29a-2e8a5f5a2dc0)
+
+4. Tabla **_`majors_courses`_** tiene 28 filas.
+ ```sh
+  SELECT * FROM majors_courses;
+  ```
+![Imagen11](https://github.com/user-attachments/assets/28ffad95-db5f-4b31-b4dd-09ae01401526)
+
+### Paso 47:
+
 
 
