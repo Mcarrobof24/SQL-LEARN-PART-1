@@ -683,13 +683,20 @@ Mediante la consulta SELECT se visualiza los datos de cada una de nuestras tabla
 ![Imagen11](https://github.com/user-attachments/assets/28ffad95-db5f-4b31-b4dd-09ae01401526)
 
 ### Paso 47: Eliminar los archivos de prueba
-En la terminal, use el comando de lista **_`ls`_** para verificar qué archivos hay en la carpeta de su proyecto. Se utiliza el **_`comando eliminar rm`_** para eliminar el archivo **_`students_test.csv y courses_test.csv`_**.
+En la terminal, se usa el comando de lista **_`ls`_** para verificar qué archivos hay en la carpeta de su proyecto. Se utiliza el **_`comando eliminar rm`_** para eliminar los archivos de prueba **_`students_test.csv y courses_test.csv`_**.
  ```sh
   camper: /project$ rm students_test.csv
   camper: /project$ rm courses_test.csv
   ```
 
-### Paso 48: 
+### Paso 48: Exportar el contenido de la base de datos
+La base de datos está terminada y se exportar su contenido a un archivo sql. Se utiliza el **_`comando pg_dump --clean --create --inserts --username=freecodecamp students > students.sql`_** en el terminal para exportar la base de datos en un archivo **_`students.sql`_**. En este se guardará todos los comandos necesarios para reconstruirla. 
+ ```sh
+  camper: /project$ pg_dump --clean --create --inserts --username=freecodecamp students > students.sql
+  ```
+El archivo **_`students.sql`_** se encuentra en la rama main de este repositorio donde podemos visualizar su contenido.
+
+
 
 
 
