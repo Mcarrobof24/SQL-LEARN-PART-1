@@ -682,7 +682,18 @@ Mediante la consulta SELECT se visualiza los datos de cada una de nuestras tabla
   ```
 ![Imagen11](https://github.com/user-attachments/assets/28ffad95-db5f-4b31-b4dd-09ae01401526)
 
-### Paso 47:
+### Paso 47: Eliminar los archivos de prueba
+En la terminal, use el comando de lista **_`ls`_** para verificar qué archivos hay en la carpeta de su proyecto. Se utiliza el **_`comando eliminar rm`_** para eliminar el archivo **_`students_test.csv y courses_test.csv`_**.
+ ```sh
+  camper: /project$ rm students_test.csv
+  camper: /project$ rm courses_test.csv
+  ```
+
+### Paso 48: 
+
+
+
+
 
 
 
